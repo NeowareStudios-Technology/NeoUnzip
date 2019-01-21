@@ -160,73 +160,6 @@ SYSTEMS8 = stellar sunos3 sunos4 sysv sysv_gcc sysv6300 tahoe ti_sysv ultrix
 SYSTEMS9 = vax v7 wombat xenix xos
 
 
-####################
-# DEFAULT HANDLING #
-####################
-
-# By default, print help on which makefile targets to try.  (The SYSTEM
-# variable is no longer supported; use "make <target>" instead.)
-
-help:
-	@echo ""
-	@echo "  If you're not sure about the characteristics of your system, try typing"
-	@echo "  \"make generic\".  This is new and uses the configure script, though it is"
-	@echo "  still being worked on."
-	@echo ""
-	@echo "  If that does not do it, try the original generic which is \"make generic1\"."
-	@echo ""
-	@echo "  If the compiler barfs and says something unpleasant about \"timezone redefined\","
-	@echo "  try typing \"make clean\" followed by \"make generic2\".  If, on the other"
-	@echo "  hand, it complains about an undefined symbol _ftime, try typing \"make clean\""
-	@echo "  followed by \"make generic3\"."
-	@echo ""
-	@echo "  One of these actions should produce a working copy of unzip on most Unix"
-	@echo "  systems.  If you know a bit more about the machine on which you work, you"
-	@echo "  might try \"make list\" for a list of the specific systems supported herein."
-	@echo "  (Many of them do exactly the same thing, so don't agonize too much over"
-	@echo "  which to pick if two or more sound equally likely.)  Also check out the"
-	@echo "  INSTALL file for notes on compiling various targets.  As a last resort,"
-	@echo "  feel free to read the numerous comments within the Makefile itself."
-	@echo ""
-	@echo "  Have a mostly pretty good day."
-	@echo ""
-
-list:
-	@echo ""
-	@echo\
- 'Type "make <system>", where <system> is one of the following:'
-	@echo ""
-	@echo  "	$(SYSTEMG1)"
-	@echo  "	$(SYSTEMG2)"
-	@echo ""
-	@echo  "	$(SYSTEMS1)"
-	@echo  "	$(SYSTEMS2)"
-	@echo  "	$(SYSTEMS3)"
-	@echo  "	$(SYSTEMS4)"
-	@echo  "	$(SYSTEMS5)"
-	@echo  "	$(SYSTEMS6)"
-	@echo  "	$(SYSTEMS7)"
-	@echo  "	$(SYSTEMS8)"
-	@echo  "	$(SYSTEMS9)"
-#	@echo ""
-#	@echo\
-# 'Targets for related utilities (ZipInfo and fNeoUnzip) include:'
-#	@echo ""
-#	@echo  "	$(SYS_UTIL1)"
-#	@echo  "	$(SYS_UTIL2)"
-	@echo ""
-	@echo\
- 'For further (very useful) information, please read the comments in Makefile.'
-	@echo ""
-
-generic_msg:
-	@echo ""
-	@echo\
- '  Attempting "make generic" now.  If this fails for some reason, type'
-	@echo\
- '  "make help" and/or "make list" for suggestions.'
-	@echo ""
-
 
 ###############################################
 # BASIC COMPILE INSTRUCTIONS AND DEPENDENCIES #
@@ -303,13 +236,6 @@ zipinfo$E:	neounzip$E			# `&' is pointless here...
 	@echo\
  '  or else invoke as "unzip -Z" (in a batch file, for example).'
 	$(LN) neounzip$E zipinfo$E
-
-# when the optional bzip2 support is provided (as recommended) by sources
-# in the 'bzip2' subdirectory, create/update the library:
-$(IZ_OUR_BZIP2_DIR)/libbz2.a:
-	@echo "Building/updating bzip2 object library..."
-	( cd $(IZ_OUR_BZIP2_DIR) ; $(MAKE) -f Makebz2.iz CC="$(CC_BZ)"\
-	 CFLAGS="$(CFLAGS_BZ)" RM="rm -f" )
 
 
 crc32$O:	crc32.c $(UNZIP_H) neozip.h crc32.h
@@ -433,26 +359,6 @@ clean:
 	rm -rf object
 	rm -rf ./$(PKGDIR)
 
-# Package generation interface (by J.Bush).  Originally tested under Sun
-# Solaris 2.x.  Other SVr4s may be very similar and could possibly use this.
-# Note:  expects version info to be stored in VERSION macro variable.
-# See "README" under ./unix/Packaging
-#
-svr4package:	unzips
-	@echo "Creating SVR4 package for Unix ..."
-	-@rm -rf ./$(PKGDIR) ./$(PKGDIR)_`uname -p`.pkg
-	-@sed -e "s/.VERSION./$(VERSION)/g" \
-	      -e "s/.PSTAMP./$(LOGNAME)_`date | tr  ' ' '_'`/g" \
-	      -e "s/.ARCH./Solaris_`uname -rp | tr ' ' ','`/g" \
-	      ./unix/Packaging/pkginfo.in > ./unix/Packaging/pkginfo
-	-@sed -e "s/.ARCH./`uname -p`/g" \
-	      ./unix/Packaging/preinstall.in > ./unix/Packaging/preinstall
-	/usr/bin/pkgmk -d . -b . -r . -f ./unix/Packaging/prototype $(PKGDIR)
-	/usr/bin/pkgtrans -o -s . $(PKGDIR)_`uname -p`.pkg $(PKGDIR)
-	@echo " "
-	@echo "To install, copy $(PKGDIR)_`uname -p`.pkg to the target system, and"
-	@echo "issue the command (as root):  pkgadd -d $(PKGDIR)_`uname -p`.pkg"
-	@echo " "
 
 install:	$(MANS)
 	-$(INSTALL_D) $(BINDIR)
@@ -481,61 +387,6 @@ TESTZIP = testmake.zip
 
 # test some basic features of the build
 test:		check
-
-check:
-	@echo '#####  This is a Unix-specific target.  (Just so you know.)'
-	@echo '#####     Make sure unzip, funzip and neounzipsfx are compiled and'
-	@echo '#####     in this directory.'
-	@if test ! -f ./unzip; then \
-	    echo "#####  ERROR:  can't find ./unzip"; exit 1; fi
-	@if test ! -f ./funzip; then \
-	    echo "#####  ERROR:  can't find ./funzip"; exit 1; fi
-	@if test ! -f ./neounzipsfx; then \
-	    echo "#####  ERROR:  can't find ./neounzipsfx"; exit 1; fi
-#
-	@if test ! -f $(TESTZIP); then \
-	    echo "#####  ERROR:  can't find test file $(TESTZIP)"; exit 1; fi
-#
-	@echo "#####  testing extraction"
-	@./unzip -bo $(TESTZIP) testmake.zipinfo
-	@if test ! -f testmake.zipinfo ; then \
-	    echo "#####  ERROR:  file extraction from $(TESTZIP) failed"; \
-	    exit 1; fi
-#
-	@echo '#####  testing zipinfo (unzip -Z)'
-	@./unzip -Z $(TESTZIP) > testmake.unzip-Z
-	@if diff testmake.unzip-Z testmake.zipinfo; then echo "OK."; else \
-	    echo "#####  WARNING:  zipinfo output doesn't match stored version"; \
-	    echo '#####     (If the only difference is the file times, compare your'; \
-	    echo '#####      timezone with the Central European timezone, which is one'; \
-	    echo '#####      hour east of Greenwich but effectively 2 hours east'; \
-	    echo '#####      during summer Daylight Savings Time.  The upper two'; \
-	    echo '#####      lines should correspond to your local time when the'; \
-	    echo '#####      files were created, on 19 November 1998 at 10:46pm CET.'; \
-	    echo '#####      If the times are consistent, please ignore this warning.)'; \
-	    fi
-	@$(RM) testmake.unzip-Z testmake.zipinfo
-#
-	@echo '#####  testing unzip -d exdir option'
-	@./unzip -bo $(TESTZIP) -d testun notes
-	@cat testun/notes
-#
-	@echo '#####  testing unzip -o and funzip (ignore funzip warning)'
-	@./unzip -boq $(TESTZIP) notes -d testun
-	@./funzip < $(TESTZIP) > testun/notes2
-	@if diff testun/notes testun/notes2; then true; else \
-	    echo '#####  ERROR:  funzip output disagrees with unzip'; fi
-#
-	@echo '#####  testing neounzipsfx (self-extractor)'
-	@cat neounzipsfx $(TESTZIP) > testsfx
-	@$(CHMOD) 0700 testsfx
-	@./testsfx -bo notes
-	@if diff notes testun/notes; then true; else \
-	    echo '#####  ERROR:  neounzipsfx file disagrees with unzip'; fi
-	@$(RM) testsfx notes testun/notes testun/notes2
-	@rmdir testun
-#
-	@echo '#####  testing complete.'
 
 
 ################################

@@ -67,14 +67,9 @@ FL2 = $(LF2)
 CP = ln
 LN = ln
 RM = rm -f
-CHMOD = chmod
-BINPERMS = 755
-MANPERMS = 644
-STRIP = strip
 E =
 O = .o
 M = unix
-SHELL = /bin/sh
 MAKEF = -f Makefile
 
 # move all object files into "object subdirectory
@@ -84,8 +79,6 @@ MOVE_OBJECT_FILES = mv flags* match_.o process_.o ttyio_.o ubz2err_.o unix_.o ex
 					process.o ttyio.o ubz2err.o unreduce.o unshrink.o fileio.o globals.o inflate.o list.o explode.o extract.o \
 					crc32.o crypt.o envargs.o neounzip.o object/
 
-# Version info for unix/unix.c
-HOST_VERSINFO=-DIZ_CC_NAME='\"\$$(CC) \"' -DIZ_OS_NAME='\"`uname -a`\"'
 
 # defaults for crc32 stuff and system dependent headers
 CRCA_O =
@@ -121,21 +114,6 @@ OBJF = fneounzip$O crc32$O $(CRCA_O) cryptf$O globalsf$O inflatef$O ttyiof$O
 #OBJF_OS2 = $(OBJF:.o=.obj)
 UNZIP_H = neounzip.h unzpriv.h globals.h $(OSDEP_H) $(ACONF_DEP)
 
-# installation
-# (probably can change next two to `install' and `install -d' if you have it)
-INSTALL = cp
-INSTALL_PROGRAM = $(INSTALL)
-INSTALL_D = mkdir -p
-# on some systems, manext=l and MANDIR=/usr/man/man$(manext) may be appropriate
-manext = 1
-prefix = /usr/local
-BINDIR = $(prefix)/bin#			where to install executables
-MANDIR = $(prefix)/man/man$(manext)#	where to install man pages
-INSTALLEDBIN = $(BINDIR)/fneounzip$E $(BINDIR)/neounzip$E $(BINDIR)/neounzipsfx$E \
-	$(BINDIR)/zipgrep$E $(BINDIR)/zipinfo$E
-INSTALLEDMAN = $(MANDIR)/fneounzip.$(manext) $(MANDIR)/unzip.$(manext) \
-	$(MANDIR)/neounzipsfx.$(manext) $(MANDIR)/zipgrep.$(manext) \
-	$(MANDIR)/zipinfo.$(manext)
 
 # Solaris 2.x stuff:
 PKGDIR = IZunzip
@@ -145,19 +123,6 @@ UNZIPS = neounzip$E fneounzip$E neounzipsfx$E
 # this is a little ugly...well, OK, it's a lot ugly:
 MANS = man/fneounzip.1 man/unzip.1 man/neounzipsfx.1 man/zipgrep.1 man/zipinfo.1
 DOCS = fneounzip.txt neounzip.txt neounzipsfx.txt zipgrep.txt zipinfo.txt
-
-# list of supported systems/targets in this version
-SYSTEMG1 = generic generic_gcc  generic_pkg generic_gccpkg
-SYSTEMG2 = generic1 generic2 generic3 generic_bz2 generic_zlib generic_shlib
-SYSTEMS1 = 386i 3Bx 7300 7300_gcc aix aix_rt amdahl amdahl_eft apollo aviion
-SYSTEMS2 = bsd bsdi bsdi_noasm bull coherent convex cray cray_opt cyber_sgi
-SYSTEMS3 = cygwin dec dnix encore eta freebsd gcc gould hk68 hp hpux
-SYSTEMS4 = isc isc_gcc isi linux linux_dos linux_noasm linux_shlib linux_shlibz
-SYSTEMS5 = lynx macosx macosx_gcc minix mips mpeix next next10 next2x next3x
-SYSTEMS6 = nextfat osf1 pixel ptx pyramid qnxnto realix regulus rs6000 sco
-SYSTEMS7 = sco_dos sco_sl sco_x286 sequent sgi solaris solaris_pkg stardent
-SYSTEMS8 = stellar sunos3 sunos4 sysv sysv_gcc sysv6300 tahoe ti_sysv ultrix
-SYSTEMS9 = vax v7 wombat xenix xos
 
 
 
@@ -179,34 +144,6 @@ SYSTEMS9 = vax v7 wombat xenix xos
 .c.pic.o:
 	$(CC) -c $(CF) -o $@ $*.c
 
-# this doesn't work...directories are always a pain with implicit rules
-#.1.txt:		man/$<
-#	nroff -Tman -man $< | col -b | uniq | \
-#	 sed 's/Sun Release ..../Info-ZIP        /' > $@
-
-
-# these rules may be specific to Linux (or at least the GNU groff package)
-# and are really intended only for the authors' use in creating non-Unix
-# documentation files (which are provided with both source and binary
-# distributions).  We should probably add a ".1.txt" rule for more generic
-# systems...
-
-fneounzip.txt:	man/fneounzip.1
-	nroff -Tascii -man man/fneounzip.1 | col -bx | uniq | expand > $@
-
-neounzip.txt:	man/unzip.1
-	nroff -Tascii -man man/unzip.1 | col -bx | uniq | expand > $@
-
-neounzipsfx.txt:	man/neounzipsfx.1
-	nroff -Tascii -man man/neounzipsfx.1 | col -bx | uniq | expand > $@
-
-zipgrep.txt:	man/zipgrep.1
-	nroff -Tascii -man man/zipgrep.1 | col -bx | uniq | expand > $@
-
-zipinfo.txt:	man/zipinfo.1
-	nroff -Tascii -man man/zipinfo.1 | col -bx | uniq | expand > $@
-
-
 all:		generic_msg generic
 unzips:		$(UNZIPS)
 objs:		$(OBJS)
@@ -227,15 +164,6 @@ neounzipsfx$E:	$(OBJX)			# add `&' for parallel makes
 
 fneounzip$E:	$(OBJF)			# add `&' for parallel makes
 	$(LD) $(FL) $(OBJF) $(FL2)
-
-zipinfo$E:	neounzip$E			# `&' is pointless here...
-	@echo\
- '  This is a Unix-specific target.  ZipInfo is not enabled in some MS-DOS'
-	@echo\
- '  versions of NeoUnzip; if it is in yours, copy neounzip.exe to zipinfo.exe'
-	@echo\
- '  or else invoke as "unzip -Z" (in a batch file, for example).'
-	$(LN) neounzip$E zipinfo$E
 
 
 crc32$O:	crc32.c $(UNZIP_H) neozip.h crc32.h
@@ -306,32 +234,6 @@ ttyiof$O:	ttyio.c $(UNZIP_H) neozip.h crypt.h ttyio.h
 	$(CC) -c $(CF) -DFUNZIP -o $@ ttyio.c
 
 
-# optional assembler replacements
-crc_i86$O:	msdos/crc_i86.asm				# 16bit only
-	$(AS) $(AF) msdos/crc_i86.asm $(ASEOL)
-
-crc_gcc$O:	crc_i386.S $(ACONF_DEP)				# 32bit, GNU AS
-	$(AS) $(AF) -x assembler-with-cpp -c -o $@ crc_i386.S
-
-crc_gcc.pic.o:	crc_i386.S $(ACONF_DEP)				# 32bit, GNU AS
-	$(AS) $(AF) -x assembler-with-cpp -c -o $@ crc_i386.S
-
-crc_sysv$O:	crc_i386.S $(ACONF_DEP)				# 32bit, SysV AS
-	$(CC) -E $(AF) crc_i386.S > crc_i386s.s
-	$(AS) -o $@ crc_i386s.s
-	$(RM) crc_i386s.s
-
-msdos$O:	msdos/msdos.c $(UNZIP_H) unzvers.h		# DOS only
-	$(CC) -c $(CF) msdos/msdos.c
-
-msdos_$O:	msdos/msdos.c $(UNZIP_H)			# DOS neounzipsfx
-	-$(CP) msdos/msdos.c msdos_.c > nul
-	$(CC) -c $(CF) -DSFX msdos_.c
-	$(RM) msdos_.c
-
-#os2$O:		os2/os2.c $(UNZIP_H)				# OS/2 only
-#	$(CC) -c $(CF) os2/os2.c
-
 unix$O:		unix/unix.c $(UNZIP_H) unzvers.h		# Unix only
 	$(CC) -c $(CF) unix/unix.c
 
@@ -341,11 +243,6 @@ unix_$O:	unix/unix.c $(UNZIP_H)				# Unix neounzipsfx
 unix.pic.o:	unix/unix.c $(UNZIP_H) unzvers.h		# Unix shlib
 	$(CC) -c $(CF) -o $@ unix/unix.c
 
-
-unix_make:
-#	@echo\
-# '(Ignore any errors from `make'"' due to the following command; it's harmless.)"
-	-@2>&1 $(LN) unix/Makefile . > /dev/null || echo > /dev/null
 
 # this really only works for Unix targets, unless E and O specified on cmd line
 clean:
@@ -360,33 +257,10 @@ clean:
 	rm -rf ./$(PKGDIR)
 
 
-install:	$(MANS)
-	-$(INSTALL_D) $(BINDIR)
-	$(INSTALL_PROGRAM) $(UNZIPS) $(BINDIR)
-	$(INSTALL) unix/zipgrep $(BINDIR)
-	$(RM) $(BINDIR)/zipinfo$E
-	$(LN) $(BINDIR)/neounzip$E $(BINDIR)/zipinfo$E
-	-$(INSTALL_D) $(MANDIR)
-	$(INSTALL) man/fneounzip.1 $(MANDIR)/fneounzip.$(manext)
-	$(INSTALL) man/unzip.1 $(MANDIR)/unzip.$(manext)
-	$(INSTALL) man/neounzipsfx.1 $(MANDIR)/neounzipsfx.$(manext)
-	$(INSTALL) man/zipgrep.1 $(MANDIR)/zipgrep.$(manext)
-	$(INSTALL) man/zipinfo.1 $(MANDIR)/zipinfo.$(manext)
-	$(CHMOD) $(BINPERMS) $(INSTALLEDBIN)
-	$(CHMOD) $(MANPERMS) $(INSTALLEDMAN)
-
-uninstall:
-	$(RM) $(INSTALLEDBIN) $(INSTALLEDMAN)
-
 # added 10/28/04 EG
 flags:  unix/configure
 	sh unix/configure "${CC}" "${CF_NOOPT}" "${IZ_BZIP2}"
 
-# the test zipfile
-TESTZIP = testmake.zip
-
-# test some basic features of the build
-test:		check
 
 
 ################################
@@ -403,12 +277,5 @@ generic:	flags	   # now try autoconfigure first
 	$(OBJECT_D)
 	$(MOVE_OBJECT_FILES)
 
-#	make $(MAKEF) unzips CF="${CF} `cat flags`"
 
-generic_gcc:
-	$(MAKE) $(MAKEF) generic CC=gcc IZ_BZIP2="$(IZ_BZIP2)"
-
-# extensions to perform SVR4 package-creation after compilation
-generic_pkg:	generic svr4package
-generic_gccpkg:	generic_gcc svr4package
 

@@ -555,28 +555,26 @@ static ZCONST char Far ZipInfoUsageLine3[] = "miscellaneous options:\n\
 #ifdef VMS
 /* UnzipUsageLine1[] is also used in vms/cmdline.c:  do not make it static */
    ZCONST char Far UnzipUsageLine1[] = "\
-UnZip %d.%d%d%s of %s, by Info-ZIP.  For more details see: unzip -v.\n\n";
+Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license\n\n";
 # ifdef COPYRIGHT_CLEAN
    static ZCONST char Far UnzipUsageLine1v[] = "\
-UnZip %d.%d%d%s of %s, by Info-ZIP.  Maintained by C. Spieler.  Send\n\
-bug reports using http://www.info-zip.org/zip-bug.html; see README for details.\
+Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.
 \n\n";
 # else
    static ZCONST char Far UnzipUsageLine1v[] = "\
-UnZip %d.%d%d%s of %s, by Info-ZIP.  UnReduce (c) 1989 by S. H. Smith.\n\
-Send bug reports using //www.info-zip.org/zip-bug.html; see README for details.\
+Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.
 \n\n";
 # endif /* ?COPYRIGHT_CLEAN */
 #else /* !VMS */
 # ifdef COPYRIGHT_CLEAN
    static ZCONST char Far UnzipUsageLine1[] = "\
-UnZip %d.%d%d%s of %s, by Info-ZIP.  Maintained by C. Spieler.  Send\n\
-bug reports using http://www.info-zip.org/zip-bug.html; see README for details.\
+Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.  \n\
+\
 \n\n";
 # else
    static ZCONST char Far UnzipUsageLine1[] = "\
-UnZip %d.%d%d%s of %s, by Info-ZIP.  UnReduce (c) 1989 by S. H. Smith.\n\
-Send bug reports using //www.info-zip.org/zip-bug.html; see README for details.\
+Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.  \n\
+\
 \n\n";
 # endif /* ?COPYRIGHT_CLEAN */
 # define UnzipUsageLine1v       UnzipUsageLine1

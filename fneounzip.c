@@ -329,7 +329,7 @@ char **argv;
   /* if no file argument and stdin not redirected, give the user help */
   if (argc == 0 && isatty(0))
   {
-    Info(slide, 1, ((char *)slide, "fUnZip (filter UnZip), version %s\n",
+    Info(slide, 1, ((char *)slide, "fNeoUnZip (filter NeoUnZip) version %s (January 2019). \nCopyright (c) 2019 Neoware.\n",
       VERSION));
     Info(slide, 1, ((char *)slide, "usage: ... | funzip%s | ...\n", s));
     Info(slide, 1, ((char *)slide, "       ... | funzip%s > outfile\n", s));

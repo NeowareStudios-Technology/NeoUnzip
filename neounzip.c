@@ -358,7 +358,7 @@ static ZCONST char Far ZipInfoUsageLine3[] = "miscellaneous options:\n\
 #  else
      static ZCONST char Far UnzipSFXBanner[] =
 #  endif
-     "UnZipSFX %d.%d%d%s of %s, by Info-ZIP (http://www.info-zip.org).\n";
+     "NeoUnZipSFX 0.1 (January 2019) - Copyright (c) 2019 NeoWare. \n";
 #  ifdef SFX_EXDIR
      static ZCONST char Far UnzipSFXOpts[] =
     "Valid options are -tfupcz and -d <exdir>; modifiers are -abjnoqCL%sV%s.\n";
@@ -555,25 +555,29 @@ static ZCONST char Far ZipInfoUsageLine3[] = "miscellaneous options:\n\
 #ifdef VMS
 /* UnzipUsageLine1[] is also used in vms/cmdline.c:  do not make it static */
    ZCONST char Far UnzipUsageLine1[] = "\
-Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license\n\n";
+NeoUnZip 0.1 (January 2019) - Copyright (c) 2019 NeoWare.  \n\
+\
+\n\n";
 # ifdef COPYRIGHT_CLEAN
    static ZCONST char Far UnzipUsageLine1v[] = "\
-Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.
+NeoUnZip 0.1 (January 2019) - Copyright (c) 2019 NeoWare.  \n\
+\
 \n\n";
 # else
    static ZCONST char Far UnzipUsageLine1v[] = "\
-Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.
+NeoUnZip 0.1 (January 2019) - Copyright (c) 2019 NeoWare.  \n\
+\
 \n\n";
 # endif /* ?COPYRIGHT_CLEAN */
 #else /* !VMS */
 # ifdef COPYRIGHT_CLEAN
    static ZCONST char Far UnzipUsageLine1[] = "\
-Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.  \n\
+NeoUnZip 0.1 (January 2019) - Copyright (c) 2019 NeoWare.  \n\
 \
 \n\n";
 # else
    static ZCONST char Far UnzipUsageLine1[] = "\
-Copyright (c) 2019 NeoUnZip - Type 'zip \"-L\"' for software license.  \n\
+NeoUnZip 0.1 (January 2019) - Copyright (c) 2019 NeoWare.  \n\
 \
 \n\n";
 # endif /* ?COPYRIGHT_CLEAN */

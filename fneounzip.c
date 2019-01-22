@@ -8,7 +8,7 @@
 */
 /* funzip.c -- by Mark Adler */
 
-#define VERSION "3.95 of 20 January 2009"
+#define VERSION "0.1 of 2019"
 
 
 /* Copyright history:
